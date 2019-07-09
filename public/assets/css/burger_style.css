@@ -1,0 +1,17 @@
+body {
+    background-color: #FFD06E;
+    text-align: center;
+}
+
+#all-burgers {
+    margin-bottom: 20px;
+}
+
+.card {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.burgerImage{
+ content-align: center;   
+}
