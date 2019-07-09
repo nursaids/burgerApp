@@ -1,7 +1,17 @@
 var connection = require("./connection");
-/** 
- * @param {object} ob 
- */
+
+
+function printQuestionMarks(num) {
+    var arr = [];
+    for (let i = 0; i < num; i++) {
+       array.push("?")
+        
+    }
+    return arr.toString();
+}
+
+
+
 
 function objToSql(ob) {
     var arr = [];
@@ -17,58 +27,77 @@ function objToSql(ob) {
     return arr.toString();
 }
 
-const orm = {
-    /**
-     * @param {String} table
-     * @param {Function} cb
-     */
-    selectAll: function (table, cb){
-        let queryString = `SELECT * FROM ${table};`;
-
-        connection.query(queryString, function (err, result){
-            if(err){
+var orm = {
+    all: function(tableInput, cb){
+        var queryString = "SELECT * FROM" + tableInput + ";";
+        connection.query(queryString, function(err,result){
+            if (err){
                 throw err;
             }
             cb(result);
-        });
-    },
-    /**
-     * @param {String} table
-     * @param {String array} cols
-     * @param {String array} vals
-     * @param {Function} cb
-     */
-    insertOne: function (table, cols, vals, cb){
-        let questionMarks = [];
-        for (let i = 0; i < vals.legth; i++){
-            questionMarks.push("?");
-        }
-        let queryString  = `INSERT INTO ${table} (${cols.toString()}) VALUES (${questionMarks.toString()})`;
-        connection.query(queryString, val, function(err, result){
-            if(err) {
-                throw err;
-            }
-            cb(result);
-        });
+        })
     },
 
-    /**
-     * @param {String} table
-     * @param {Object} objColVals
-     * @param {String} condition
-     * @param {Function} cb
+    create: function(table, cols, vals,cb){
 
-     */
-    updateOne: function (table, objColVal, condition, cb){
-        let queryString = `UPDATE ${table} SET ${objToSql(objColVals)} WHERE ${condition}`;
+     var queryString = "INSERT INTO " + table;
+
+        queryString += "(";
+        queryString += cols.toString();
+        queryString += "VALUES(";
+        queryString += printQuestionMarks(vals.legth);
+        queryString += ")";
+
         console.log(queryString);
-        connection.query(queryString,function(err, result){
+
+        connection.query(queryString, vals, function(err, result){
             if(err){
-                throw err;
+                throw err;         
             }
             cb(result);
-        });
+        })
+
+    },
+
+    update: function(table, cols, vals,cb){
+
+        var queryString = "UPDATE " + table;
+
+        queryString += "SET";
+        queryString += objToSql(objColVals);
+        queryString += "WHERE";
+        queryString += condition;
+
+        console.log(queryString);
+
+        connection.query(queryString, vals, function(err, result){
+            if(err){
+                throw err;         
+            }
+            cb(result);
+        })
+
+    },
+
+    delete: function(table, cols, cb){
+
+        var queryString = "DELETE FROM " + table;
+
+        queryString += "WHERE";
+        queryString += condition;
+
+        
+
+        connection.query(queryString, vals, function(err, result){
+            if(err){
+                throw err;         
+            }
+            cb(result);
+        })
+
     }
-}
+
+    
+};
 
 module.exports = orm;
