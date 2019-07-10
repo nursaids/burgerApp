@@ -1,1 +1,0 @@
-exports.rootPassword = process.env.ROOT_PASSWORD;
