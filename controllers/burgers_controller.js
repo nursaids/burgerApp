@@ -3,12 +3,14 @@ var router = express.Router();
 var burger = require("../models/burger");
 
 router.get("/", function (req, res) {
+    
     burger.all(function (data) {
-        res.hbsObject = {
+        console.log(data[0].name + " first res")
+        hbsObject = {
             burgers: data
         };
 
-        console.log(hbsObject);
+        console.log(res.data + " the data");
         res.render("index", hbsObject);
     });
 });
