@@ -1,14 +1,3 @@
-body {
-    background-color: #FFD06E;
-    text-align: center;
+body{
+    background-color: #FFCA63;
 }
-
-#all-burgers {
-    margin-bottom: 20px;
-}
-
-.card {
-    width: 100%;
-    margin-bottom: 10px;
-}
-
