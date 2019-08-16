@@ -1,81 +1,38 @@
-// Import MySQL connection.
-var connection = require("../config/connection.js");
+// Dependencies
+var express = require("express");
+var router = express.Router();
 
-// Helper function for SQL syntax.
-function printQuestionMarks(num) {
-    var arr = [];
+// Import the model (burger.js) to use its database functions.
+var burger = require("../models/burger.js");
 
-    for (var i = 0; i < num; i++) {
-        arr.push("?");
-    }
+// Get all data
+router.get("/", function(req, res) {
+    burger.selectAll(function(data) {
+      var hbsObject = {
+        burgers: data
+      };
+      console.log(hbsObject);
+      res.render("index", hbsObject);
+    });
+  });
 
-    return arr.toString();
-}
+  // give new data
+  router.post('/burgers', function(req, res) {
+    burger.insertOne([
+      'burger_name'
+    ], [
+      req.body.burger_name
+    ], function(data) {
+      res.redirect('/');
+    });
+  });
+  
+  // give update on existing data
+  router.post('/burger/eat/:id', function (req, res) {
+    burger.updateOne(req.params.id, function() {
+      res.redirect('/');
+    });
+  });
 
-// Helper function to convert object key/value pairs to SQL syntax
-function objToSql(ob) {
-    var arr = [];
-
-    // loop through the keys and push the key/value as a string int arr
-    for (var key in ob) {
-        var value = ob[key];
-
-        if (Object.hasOwnProperty.call(ob, key)) {
-            if (typeof value === "string" && value.indexOf(" ") >= 0) {
-                value = "'" + value + "'";
-            }
-            arr.push(key + "=" + value);
-        }
-    }
-
-    return arr.toString();
-}
-
-// Object for all SQL statement functions.
-var orm = {
-    // get every data
-    selectAll: function (table, cb) {
-        var queryString = "SELECT * FROM " + table + ";";
-        connection.query(queryString, function (err, result) {
-            if (err) {
-                throw err;
-            }
-            cb(result);
-        });
-    },
-
-    // add to data
-    insertOne: function(table, cols, vals, cb) {
-        var queryString = "INSERT INTO " + table;
-        queryString += " (";
-        queryString += cols.toString();
-        queryString += ") ";
-        queryString += "VALUES (";
-        queryString += printQuestionMarks(vals.length);
-        queryString += ") ";
-
-        connection.query(queryString, vals, function (err, result) {
-            if (err) {
-                throw err;
-            }
-            cb(result);
-        });
-    },
-
-    // modify data
-    updateOne: function(table, burgerID, cb){
-        var queryString = "UPDATE " + table;
-		queryString += " SET ? WHERE ?";
-        connection.query(queryString, [{
-            devoured: true
-        }, {
-            id: burgerID
-        }], function (err, result) {
-            if (err) throw err;
-            cb(result);
-          });
-        }
-    };
-    
-    // Export the orm object for the model (burger.js).
-    module.exports = orm;
+  // Export routes for server.js to use.
+  module.exports = router;
