@@ -1,14 +1,22 @@
+// Set up MySQL connection.
 var mysql = require("mysql");
 
-var connection = mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-  user: "root",
-  password: "Be2ge4r713$",
-  database: "burger_db"
-});
+// For Heroku Deployment 
+var connection;
+if (process.env.JAWSDB_URL) {
+  connection = mysql.createConnection(process.env.JAWSDB_URL);
+}
+// For Local Database
+else {
+  connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "", // Add your password
+    database: "burgers_db" // Add your database
+  });
+}
 
-
+// Make connection.
 connection.connect(function (err) {
   if (err) {
     console.error("error connecting: " + err.stack);
@@ -17,5 +25,5 @@ connection.connect(function (err) {
   console.log("connected as id " + connection.threadId);
 });
 
-
+// Export connection for our ORM to use.
 module.exports = connection;
