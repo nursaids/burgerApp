@@ -1,74 +1,45 @@
-<img src="" alt="">
-<h1 class= "title d-flex justify-content-center">Eat-Da-Burger!</h1>
+<div class="container app">
+  <div class="row">
+    {{!-- Uneaten Burger --}}
+    <div class="col-md-6">
+      <ol>
+        {{#each burgers}}
+        {{#unless this.devoured}}
+        <form action="burger/eat/{{id}}" method="POST">
+          <div class="input-group">
+             <li>{{this.burger_name}}
+          <button type="submit" class='uneaten'><i class="fas fa-utensils"></i> </button>
+        </li>
+          </div>
+        </form>
+        {{/unless}}
+        {{/each}}
+    </div>
 
-<div class="container">
-    <div class= "row">
-        <div class = "col-12 justify-content-center">
-            {{!-- image of burger --}}
-        </div>
+    {{!-- Eaten Burger --}}
+    <div class="col-md-6">
+      <ol class='burgerEaten'>
+        {{#each burgers}}
+        {{#if this.devoured}}
+        <li>{{this.burger_name}}</li>
+        {{/if}}
+        {{/each}}
+      </ol>
     </div>
-    <div class= "row">
-        <div class = "col-6 justify-content-center left-div">
-            {{#each burger}}
-            {{#unless eaten}}
-            <li class="div border border-warning bg-warning text-dark d-flex">
-                <span class="d-flex p-2" style="font-weight:700">{{name}}</span>
-                <button type="button" class="btn btn-danger d-flex ml-auto p-2 eat" identify = "{{id}}">Eat</button>
-            </li>
-            {{/unless}}
-            {{/each}}
-        </div>
-        <div class= "col-6 justify-content-center right-div">
-            {{#each burger}}
-            {{#if eaten}}
-            <div class="div bg-secondary text-dark d-flex">
-                <span class="d-flex p-2" style="font-weight:700">{{name}}</span>
-            </div>
-            {{/if}}
-            {{/each}}
-        </div>
-    </div>
-    <div class = "row">
-        <div class = "col-12 justify-content-center">
-            <div class="form-group">
-                <label for="burger-input">Type in a burger you want to eat and press submit!</label>
-                <textarea class="form-control" id="burger-input" rows="3"></textarea>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12 justify-content-center">
-            <button type="button" class="btn btn-primary add-input">Primary</button>
-        </div>
-        <div class="col-12 justify-content-center">
-        </div>
-    </div>
+  </div>
 </div>
 
-<script>
-    $(".add-input").on("click", function(){
-        var newBurger = {
-            name : $("#burger-input").val(),
-            eaten : 0
-        }
-        $.ajax("/", {
-            type: "POST",
-            data: newBurger
-        }).then(function (data) {
-            console.log(data);
-            location.reload();
-        });
-    })
-    $(".eat").on("click", function(){
-        if ($(this).attr("identify")) {
-            var data2 = { id: $(this).attr("identify")};
-            $.ajax("/", {
-                type: "PUT",
-                data: data2
-            }).then(function (data) {
-                console.log(data);
-                location.reload();
-            });
-        }
-    });
-</script>
+<hr>
+
+<div class="container app">
+  {{!-- Add New Burger --}}
+  <div class="row">
+    <div class="col-md-12">
+        <h2>Enter a burger you want to eat and submit!</h2>
+      <form action="/burgers" method="POST">
+        <input type="text" id="name" name="burger_name" placeholder="World's best burger">
+        <button type="submit" class="add">Submit <i class="fas fa-clipboard-list"></i></button>
+      </form>
+    </div>
+  </div>
+</div>
